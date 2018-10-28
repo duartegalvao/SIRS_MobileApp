@@ -40,6 +40,14 @@ python3 mobile/manage.py runserver
 
 Django documentation is available [here](https://docs.djangoproject.com/en/2.1/).
 
+### Exiting
+
+To leave the environment, run:
+
+```bash
+deactivate
+```
+
 ## Team
 
 | Number | Name             |
