@@ -1,9 +1,58 @@
+import json
+import requests
+from django.contrib import messages
 from django.shortcuts import render, redirect
+
+from .forms import RemoteAuthenticationForm
 
 
 def home(request):
-    return render(request, 'mobile_app/home.html')
+    return render(request, 'mobile_app/home.html', {'refresh': True})
 
 
 def login_view(request):
-    return redirect('index')
+    if request.method == 'POST':
+        form = RemoteAuthenticationForm(data = request.POST)
+        print("validating")
+        if form.is_valid():
+            print("validated")
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+
+            payload = {
+                "username": username,
+                "password": password
+            }
+
+            r = requests.post("http://localhost:8000/api/login/?format=json", data=payload)
+
+            resp = json.loads(r.text)
+
+            if r.status_code == 200:
+                if resp.secret is None:
+                    messages.error(request, 'Unknown error.')
+                else:
+                    # TODO save resp.secret
+                    messages.success(request, f'{username} is logged in!')
+                    return redirect('index')
+            elif r.status_code == 400:
+                if resp.error is not None and resp.error == "notFirstLogin":
+                    messages.error(request, 'Credentials error.')
+                elif resp.error is not None and resp.error == "badRequest":
+                    messages.error(request, 'Unknown error.')
+                else:
+                    messages.error(request, 'Unknown error.')
+            elif r.status_code == 401:
+                if resp.error is not None and resp.error == "notFirstLogin":
+                    messages.error(request, 'Not first login. Please contact web app administrators.')
+                else:
+                    messages.error(request, 'Unknown error.')
+            elif r.status_code == 500:
+                messages.error(request, 'Unknown error.')
+            else:
+                messages.error(request, 'Unknown error.')
+
+        return render(request, 'mobile_app/login.html', {'form': form})
+    else:
+        form = RemoteAuthenticationForm()
+        return render(request, 'mobile_app/login.html', {'form': form})
