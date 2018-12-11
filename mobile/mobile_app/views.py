@@ -9,6 +9,7 @@ from .decorators import login_required_SIRS
 import pyotp
 import time
 import datetime
+from django.conf import settings
 
 
 @login_required_SIRS
@@ -38,7 +39,7 @@ def login_view(request):
                 "password": password
             }
 
-            r = requests.post("https://sirs.galvao.xyz/api/login/?format=json", data=payload)
+            r = requests.post(settings.API_ENDPOINT + "/api/login/?format=json", data=payload)
 
             resp = json.loads(r.text)
 
@@ -87,7 +88,7 @@ def logout_view(request):
         "totp_key": totp_key
     }
 
-    r = requests.post("https://sirs.galvao.xyz/api/logout/?format=json", data=payload)
+    r = requests.post(settings.API_ENDPOINT + "/api/logout/?format=json", data=payload)
 
     if r.status_code == 200:
         two_factor.delete()

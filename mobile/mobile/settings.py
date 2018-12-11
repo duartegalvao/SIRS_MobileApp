@@ -122,3 +122,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+#API_ENDPOINT = "https://sirs.galvao.xyz"
+API_ENDPOINT = "http://localhost:8000"
