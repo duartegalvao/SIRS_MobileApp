@@ -30,10 +30,10 @@ def login_view(request):
                 "password": password
             }
 
-            r = requests.post("http://localhost:8000/api/login/?format=json", data=payload)
+            r = requests.post("https://sirs.galvao.xyz/api/login/?format=json", data=payload)
 
             resp = json.loads(r.text)
-            print(resp)
+
             if r.status_code == 200:
                 if resp['secret'] is None:
                     messages.error(request, 'Unknown error.')
@@ -68,6 +68,22 @@ def login_view(request):
         return render(request, 'mobile_app/login.html', {'form': form})
 
 
+@login_required_SIRS
 def logout_view(request):
-    # Send request to revoke the totp code
-    return render(request, 'mobile_app/home.html')
+    two_factor = TwoFactor.objects.first()
+    username = two_factor.username
+    totp_key = two_factor.totp_key
+
+    payload = {
+        "username": username,
+        "totp_key": totp_key
+    }
+
+    r = requests.post("https://sirs.galvao.xyz/api/logout/?format=json", data=payload)
+
+    if r.status_code == 200:
+        two_factor.delete()
+        return redirect('index')
+    else:
+        messages.error(request, 'Unknown error.')
+        return render(request, 'mobile_app/home.html', {'refresh': False, 'code': "", 'loggedIn': False})
