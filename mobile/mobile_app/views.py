@@ -7,18 +7,26 @@ from .forms import RemoteAuthenticationForm
 from .models import TwoFactor
 from .decorators import login_required_SIRS
 import pyotp
+import time
+import datetime
+
 
 @login_required_SIRS
 def home(request):
     totp = pyotp.TOTP(TwoFactor.objects.first().totp_key)
     code = totp.now()
+    refresh_in = code_refresh(datetime.datetime.now(), totp.interval)
 
-    return render(request, 'mobile_app/home.html', {'refresh': True, 'code': code, 'loggedIn': True})
+    return render(request, 'mobile_app/home.html', {'refresh': refresh_in, 'code': code, 'loggedIn': True})
+
+
+def code_refresh(for_time, interval=30):
+    return interval - (time.mktime(for_time.timetuple()) % interval)
 
 
 def login_view(request):
     if request.method == 'POST':
-        form = RemoteAuthenticationForm(data = request.POST)
+        form = RemoteAuthenticationForm(data=request.POST)
         print("validating")
         if form.is_valid():
             print("validated")
