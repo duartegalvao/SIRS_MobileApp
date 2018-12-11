@@ -13,7 +13,7 @@ def home(request):
     totp = pyotp.TOTP(TwoFactor.objects.first().totp_key)
     code = totp.now()
 
-    return render(request, 'mobile_app/home.html', {'refresh': True, 'code': code})
+    return render(request, 'mobile_app/home.html', {'refresh': True, 'code': code, 'loggedIn': True})
 
 
 def login_view(request):
@@ -38,9 +38,9 @@ def login_view(request):
                 if resp['secret'] is None:
                     messages.error(request, 'Unknown error.')
                 else:
-                    # TODO save resp.secret
                     two_fact = TwoFactor(totp_key=resp['secret'])
                     two_fact.is_logged_in = True
+                    two_fact.username = username
                     two_fact.save()
 
                     messages.success(request, f'{username} is logged in!\n Two step authentication is now enabled')
@@ -66,3 +66,8 @@ def login_view(request):
     else:
         form = RemoteAuthenticationForm()
         return render(request, 'mobile_app/login.html', {'form': form})
+
+
+def logout_view(request):
+    # Send request to revoke the totp code
+    return render(request, 'mobile_app/home.html')
