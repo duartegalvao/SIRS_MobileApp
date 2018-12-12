@@ -123,5 +123,9 @@ STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-#API_ENDPOINT = "https://sirs.galvao.xyz"
-API_ENDPOINT = "http://localhost:8000"
+API_ENDPOINT = "https://sirs.galvao.xyz"
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass

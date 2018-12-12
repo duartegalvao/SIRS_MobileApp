@@ -106,3 +106,6 @@ mobile-env/
 
 # idea
 .idea/
+
+# project local settings
+local_settings.py
