@@ -55,7 +55,9 @@ def login_view(request):
                     messages.success(request, f'{username} is logged in!\n Two step authentication is now enabled')
                     return redirect('index')
             elif r.status_code == 400:
-                if resp['error'] is not None and resp['error'] == "notFirstLogin":
+                if resp['error'] is not None and resp['error'] == "retryLimitExceded":
+                    messages.error(request, 'Rate limit exceded.')
+                elif resp['error'] is not None and resp['error'] == "notFirstLogin":
                     messages.error(request, 'Credentials error.')
                 elif resp['error'] is not None and resp['error'] == "badRequest":
                     messages.error(request, 'Unknown error.')
