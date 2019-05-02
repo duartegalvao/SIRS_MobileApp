@@ -2,7 +2,9 @@
 
 ## Description
 
-SIRS project mobile app component.
+This is part of a project for the [Network and Computer Security (SIRS)](https://fenix.tecnico.ulisboa.pt/disciplinas/SIRS/2018-2019/1-semestre) course in Instituto Superior Técnico of the University of Lisbon.
+
+The repo contains the SIRS project mobile app component.
 
 ## Instructions
 
@@ -50,8 +52,8 @@ deactivate
 
 ## Team
 
-| Number | Name             |
-| ------ | ---------------- |
-| 83422  | Amândio Faustino |
-| 83449  | Duarte Galvão    |
-| 83524  | Marta Cruz       |
+| Student Number | Name             | Github Profile                                  |
+| -------------- | ---------------- | ----------------------------------------------- |
+| 83422          | Amândio Faustino | [Nandinski](https://github.com/Nandinski)       |
+| 83449          | Duarte Galvão    | [duartegalvao](https://github.com/duartegalvao) |
+| 83524          | Marta Cruz       | [rbouru](https://github.com/rbouru)             |
